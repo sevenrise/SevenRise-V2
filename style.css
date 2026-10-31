@@ -1,0 +1,170 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080a0f;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #292929;
+}
+
+.logo {
+    color: #e8bd62;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+main {
+    width: 90%;
+    max-width: 550px;
+    margin: auto;
+}
+
+.hero {
+    text-align: center;
+    padding: 55px 10px 35px;
+}
+
+.coin {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    margin: auto;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #ffe29a, #a76c16);
+    color: #17110a;
+    font-size: 45px;
+    font-weight: bold;
+    box-shadow: 0 0 35px #e8bd6250;
+}
+
+.hero h1 {
+    color: #e8bd62;
+    margin-top: 20px;
+    letter-spacing: 5px;
+}
+
+.hero p {
+    color: #999;
+    margin: 10px;
+}
+
+.badge {
+    display: inline-block;
+    border: 1px solid #b88a37;
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: #e8bd62;
+    font-size: 11px;
+    margin-top: 15px;
+}
+
+.card {
+    background: #121720;
+    border: 1px solid #303747;
+    border-radius: 15px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+button {
+    background: linear-gradient(120deg, #b98731, #f5d889);
+    color: black;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tabs button {
+    flex: 1;
+}
+
+form input,
+#dashboard input {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    background: #080d14;
+    border: 1px solid #343d4b;
+    color: white;
+    border-radius: 8px;
+}
+
+form button,
+#dashboard .card button {
+    width: 100%;
+    margin-top: 12px;
+}
+
+h2 {
+    margin-bottom: 18px;
+    color: #e8bd62;
+}
+
+.balance {
+    background: #080d14;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.balance p {
+    color: #aaa;
+}
+
+.balance h1 {
+    color: #e8bd62;
+    font-size: 40px;
+    margin-top: 10px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.stats small {
+    color: #999;
+}
+
+#message,
+#claimMessage {
+    color: #e8bd62;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    padding: 35px;
+    line-height: 2;
+}
+
+[hidden] {
+    display: none !important;
+  }
