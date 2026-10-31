@@ -1,0 +1,6 @@
+airdrop/
+│
+├── index.html
+├── style.css
+├── config.js
+└── app.js
