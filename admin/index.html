@@ -2,399 +2,333 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080808">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SevenRise | Super Admin</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
 
 <style>
-:root {
-    --bg: #080808;
-    --panel: #141414;
-    --panel2: #1b1b1b;
-    --gold: #d8b45b;
-    --gold2: #f5d98b;
-    --text: #ffffff;
-    --muted: #999999;
-    --border: #303030;
-    --green: #39c982;
-    --red: #ff6666;
-    --blue: #65baff;
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#090b10;
+ color:#f5f5f5;
+ font-family:Arial,sans-serif;
+}
+header{
+ padding:20px;
+ background:#11151d;
+ border-bottom:1px solid #b58b32;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+.logo{
+ color:#e5b84b;
+ font-size:21px;
+ font-weight:bold;
+ letter-spacing:2px;
+}
+button{
+ background:#d5a637;
+ border:0;
+ padding:12px 18px;
+ border-radius:8px;
+ font-weight:bold;
+ cursor:pointer;
+ color:#111;
+}
+main{padding:20px;max-width:1100px;margin:auto}
+.card{
+ background:#151a24;
+ padding:20px;
+ border:1px solid #303746;
+ border-radius:12px;
+ margin-bottom:18px;
+}
+input{
+ width:100%;
+ padding:14px;
+ margin:8px 0;
+ border-radius:7px;
+ border:1px solid #414b5c;
+ background:#090d15;
+ color:white;
+}
+h2{color:#e5b84b}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+.stat{
+ background:#202735;
+ padding:18px;
+ border-radius:10px;
+}
+.stat h1{color:#e5b84b;margin:10px 0}
+.table-wrap{overflow-x:auto}
+table{
+ width:100%;
+ border-collapse:collapse;
+ min-width:550px;
+}
+td,th{
+ padding:12px;
+ border-bottom:1px solid #303746;
+ text-align:left;
+ font-size:13px;
+}
+th{color:#e5b84b}
+.hidden{display:none!important}
+#message{color:#f0bd53}
+.badge{color:#5ee6a8}
+footer{text-align:center;padding:25px;color:#777}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">SEVENRISE ADMIN</div>
+ <button id="logoutBtn" class="hidden" onclick="logout()">LOGOUT</button>
+</header>
+
+<main>
+
+<section id="loginSection" class="card">
+ <h2>SUPER ADMIN LOGIN</h2>
+ <p>Masuk menggunakan akun Super Admin SevenRise.</p>
+
+ <input id="email" type="email"
+ placeholder="Email" autocomplete="username">
+
+ <input id="password" type="password"
+ placeholder="Password" autocomplete="current-password">
+
+ <button onclick="login()">LOGIN</button>
+ <p id="message"></p>
+</section>
+
+<section id="dashboard" class="hidden">
+
+ <div class="card">
+  <h2>SUPER ADMIN DASHBOARD</h2>
+  <p class="badge">● SUPER ADMIN ACCESS VERIFIED</p>
+  <p id="adminEmail"></p>
+ </div>
+
+ <div class="stats">
+  <div class="stat">
+   <small>TOTAL MEMBERS</small>
+   <h1 id="members">0</h1>
+  </div>
+
+  <div class="stat">
+   <small>TOTAL SVR POINTS</small>
+   <h1 id="points">0</h1>
+  </div>
+
+  <div class="stat">
+   <small>PENDING CLAIMS</small>
+   <h1 id="pending">0</h1>
+  </div>
+
+  <div class="stat">
+   <small>APPROVED CLAIMS</small>
+   <h1 id="approved">0</h1>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>MEMBER MANAGEMENT</h2>
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>EMAIL</th>
+      <th>USERNAME</th>
+      <th>POINTS</th>
+      <th>WALLET</th>
+     </tr>
+    </thead>
+    <tbody id="memberRows"></tbody>
+   </table>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>AIRDROP CLAIMS</h2>
+  <div class="table-wrap">
+   <table>
+    <thead>
+     <tr>
+      <th>EMAIL</th>
+      <th>WALLET</th>
+      <th>STATUS</th>
+      <th>DATE</th>
+     </tr>
+    </thead>
+    <tbody id="claimRows"></tbody>
+   </table>
+  </div>
+ </div>
+
+ <button onclick="refreshDashboard()">REFRESH DATA</button>
+ <p id="dashboardMessage"></p>
+
+</section>
+</main>
+
+<footer>
+ SEVENRISE © 2026 | SUPER ADMIN PANEL
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function showMessage(text){
+ $("message").textContent=text;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+async function login(){
+ const email=$("email").value.trim();
+ const password=$("password").value;
+
+ if(!email || !password){
+  showMessage("Masukkan email dan password.");
+  return;
+ }
+
+ showMessage("Memeriksa akun...");
+
+ try{
+  const {data,error}=await db.auth.signInWithPassword({
+   email,password
+  });
+
+  if(error) throw error;
+
+  const {data:isAdmin,error:roleError}=await db.rpc(
+   "is_super_admin"
+  );
+
+  if(roleError) throw roleError;
+
+  if(isAdmin!==true){
+   await db.auth.signOut();
+   throw new Error("Akun ini bukan Super Admin.");
+  }
+
+  $("loginSection").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");
+  $("adminEmail").textContent=data.user.email;
+
+  await refreshDashboard();
+
+ }catch(error){
+  showMessage(error.message);
+ }
 }
 
-body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: Arial, sans-serif;
+async function refreshDashboard(){
+ $("dashboardMessage").textContent="Memuat data...";
+
+ try{
+  const {data:stats,error:statsError}=await db.rpc(
+   "admin_dashboard_stats"
+  );
+  if(statsError) throw statsError;
+
+  const s=stats[0];
+
+  $("members").textContent=Number(s.total_members).toLocaleString("id-ID");
+  $("points").textContent=Number(s.total_points).toLocaleString("id-ID");
+  $("pending").textContent=Number(s.pending_claims).toLocaleString("id-ID");
+  $("approved").textContent=Number(s.approved_claims).toLocaleString("id-ID");
+
+  const {data:members,error:memberError}=await db.rpc(
+   "admin_list_members"
+  );
+  if(memberError) throw memberError;
+
+  $("memberRows").replaceChildren();
+
+  members.forEach(m=>{
+   const row=document.createElement("tr");
+   [m.email,m.display_name,m.points,m.wallet_address||"-"]
+   .forEach(value=>{
+    const td=document.createElement("td");
+    td.textContent=value??"-";
+    row.appendChild(td);
+   });
+   $("memberRows").appendChild(row);
+  });
+
+  const {data:claims,error:claimError}=await db.rpc(
+   "admin_list_claims"
+  );
+  if(claimError) throw claimError;
+
+  $("claimRows").replaceChildren();
+
+  claims.forEach(c=>{
+   const row=document.createElement("tr");
+
+   [
+    c.email,
+    c.wallet_address,
+    c.status,
+    new Date(c.created_at).toLocaleDateString("id-ID")
+   ].forEach(value=>{
+    const td=document.createElement("td");
+    td.textContent=value??"-";
+    row.appendChild(td);
+   });
+
+   $("claimRows").appendChild(row);
+  });
+
+  $("dashboardMessage").textContent="Data berhasil diperbarui.";
+
+ }catch(error){
+  $("dashboardMessage").textContent="Gagal memuat: "+error.message;
+ }
 }
 
-button, input {
-    font: inherit;
+async function logout(){
+ await db.auth.signOut();
+ location.reload();
 }
 
-button {
-    cursor: pointer;
+async function checkSession(){
+ try{
+  const {data}=await db.auth.getSession();
+
+  if(!data.session) return;
+
+  const {data:isAdmin,error}=await db.rpc("is_super_admin");
+
+  if(error || isAdmin!==true){
+   await db.auth.signOut();
+   return;
+  }
+
+  $("loginSection").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");
+  $("adminEmail").textContent=data.session.user.email;
+
+  await refreshDashboard();
+
+ }catch(error){
+  showMessage(error.message);
+ }
 }
 
-.hidden {
-    display: none !important;
-}
+checkSession();
+</script>
 
-/* LOGIN */
-
-#loginPage {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.login-card {
-    width: 100%;
-    max-width: 390px;
-    background: var(--panel);
-    border: 1px solid var(--gold);
-    border-radius: 18px;
-    padding: 30px;
-    box-shadow: 0 0 35px #d8b45b12;
-}
-
-.logo {
-    text-align: center;
-    font-size: 35px;
-    font-weight: 900;
-    color: var(--gold);
-    letter-spacing: 2px;
-}
-
-.login-subtitle {
-    text-align: center;
-    color: var(--muted);
-    margin: 10px 0 25px;
-    font-size: 12px;
-    letter-spacing: 3px;
-}
-
-input {
-    width: 100%;
-    padding: 13px;
-    margin-bottom: 13px;
-    border: 1px solid var(--border);
-    background: #090909;
-    color: white;
-    border-radius: 8px;
-    outline: none;
-}
-
-input:focus {
-    border-color: var(--gold);
-}
-
-.gold-button {
-    background: linear-gradient(135deg, #b88b36, #f4d98c);
-    color: #111;
-    border: none;
-    padding: 13px;
-    border-radius: 8px;
-    font-weight: bold;
-}
-
-.login-card .gold-button {
-    width: 100%;
-}
-
-.message {
-    margin-top: 15px;
-    font-size: 13px;
-    color: var(--red);
-    line-height: 1.5;
-}
-
-/* DASHBOARD */
-
-#dashboard {
-    display: none;
-    min-height: 100vh;
-}
-
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 245px;
-    background: #101010;
-    border-right: 1px solid var(--border);
-    padding: 25px 15px;
-    z-index: 10;
-}
-
-.sidebar-logo {
-    color: var(--gold);
-    font-size: 25px;
-    font-weight: 900;
-    padding: 5px 10px 25px;
-}
-
-.sidebar small {
-    display: block;
-    color: var(--muted);
-    font-size: 10px;
-    letter-spacing: 2px;
-    margin-top: 5px;
-}
-
-.nav-title {
-    color: #777;
-    font-size: 10px;
-    padding: 15px 10px 8px;
-    letter-spacing: 2px;
-}
-
-.nav-btn {
-    width: 100%;
-    text-align: left;
-    border: none;
-    background: transparent;
-    color: #aaa;
-    padding: 13px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-}
-
-.nav-btn:hover,
-.nav-btn.active {
-    color: var(--gold);
-    background: #d8b45b16;
-}
-
-.logout {
-    position: absolute;
-    bottom: 25px;
-    left: 15px;
-    width: calc(100% - 30px);
-    padding: 12px;
-    background: #401b1b;
-    border: none;
-    border-radius: 8px;
-    color: #ff8888;
-}
-
-.main {
-    margin-left: 245px;
-    padding: 28px;
-}
-
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.topbar h1 {
-    font-size: 25px;
-}
-
-.admin-label {
-    color: var(--gold);
-    font-size: 12px;
-    border: 1px solid #8d7037;
-    padding: 8px 12px;
-    border-radius: 20px;
-}
-
-/* SECTIONS */
-
-.section {
-    display: none;
-}
-
-.section.active {
-    display: block;
-}
-
-.section-heading {
-    margin-bottom: 20px;
-}
-
-.section-heading h2 {
-    font-size: 22px;
-    margin-bottom: 8px;
-}
-
-.section-heading p {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-/* CARDS */
-
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-}
-
-.card p {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.card h2 {
-    color: var(--gold);
-    font-size: 27px;
-    margin-top: 13px;
-}
-
-/* PANELS */
-
-.panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    overflow-x: auto;
-}
-
-.panel h3 {
-    margin-bottom: 18px;
-    color: var(--gold);
-}
-
-.info-line {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    color: #ccc;
-    font-size: 14px;
-}
-
-/* TABLES */
-
-.table-tools {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.search {
-    max-width: 320px;
-    margin: 0;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 650px;
-}
-
-th, td {
-    border-bottom: 1px solid var(--border);
-    padding: 13px 10px;
-    text-align: left;
-    font-size: 12px;
-}
-
-th {
-    color: var(--gold);
-}
-
-td {
-    color: #ddd;
-}
-
-.badge {
-    display: inline-block;
-    padding: 5px 8px;
-    border-radius: 5px;
-    background: #302719;
-    color: var(--gold);
-    font-size: 11px;
-}
-
-.action {
-    border: none;
-    padding: 7px 9px;
-    border-radius: 5px;
-    margin: 2px;
-    font-size: 11px;
-}
-
-.approve {
-    background: #17452d;
-    color: #70e9a5;
-}
-
-.reject {
-    background: #4a1b1b;
-    color: #ff8585;
-}
-
-.paid {
-    background: #18374b;
-    color: #80caff;
-}
-
-.save {
-    background: var(--gold);
-    color: black;
-}
-
-.small-input {
-    width: 85px;
-    margin: 0;
-    padding: 7px;
-}
-
-/* SETTINGS */
-
-.gold-text {
-    color: var(--gold);
-}
-
-.status-message {
-    padding: 12px;
-    border-radius: 8px;
-    background: #1b1b1b;
-    color: var(--muted);
-    margin-top: 12px;
-    font-size: 13px;
-}
-
-.refresh-button {
-    background: #252525;
-    color: var(--gold);
-    border: 1px solid var(--border);
-    padding: 10px 14px;
-    border-radius: 7px;
-}
-
-/* MOBILE */
-
-@media(max-width: 900px) {
-
-    .sidebar {
-        position: relative;
-        width: 100
+</body>
+    </html>
