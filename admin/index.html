@@ -2,385 +2,147 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SevenRise | Premium Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SevenRise | Super Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../config.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-:root{
- --bg:#080a0e;
- --panel:#11151c;
- --panel2:#171d26;
- --gold:#d9ad52;
- --gold2:#ffdf91;
- --text:#f4f1e9;
- --muted:#9299a5;
- --green:#35d49a;
- --red:#ff6675;
- --border:rgba(217,173,82,.19);
+:root {
+  --bg:#080a0f;
+  --panel:#121722;
+  --gold:#d8ad50;
+  --text:#f5f5f5;
+  --muted:#9299a8;
+  --line:#293142;
+  --green:#28c58b;
+  --red:#ed5965;
 }
-
 *{box-sizing:border-box}
-
 body{
- margin:0;
- background:
- radial-gradient(ellipse at 50% -20%,#302512 0%,transparent 45%),
- var(--bg);
- color:var(--text);
- font-family:Arial,sans-serif;
- min-height:100vh;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
 }
-
-button,input{
- font:inherit;
-}
-
-button{cursor:pointer}
-
 header{
- height:75px;
- padding:0 25px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- background:rgba(12,15,20,.95);
- border-bottom:1px solid var(--border);
- position:sticky;
- top:0;
- z-index:10;
- backdrop-filter:blur(15px);
+  padding:18px;
+  background:#10141d;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-
-.brand{
- display:flex;
- align-items:center;
- gap:12px;
+.logo{
+  color:var(--gold);
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:3px;
 }
-
-.brand-logo{
- width:43px;
- height:43px;
- border-radius:13px;
- display:grid;
- place-items:center;
- background:linear-gradient(135deg,#f8d98c,#a87925);
- color:#17120a;
- font-size:23px;
- font-weight:900;
- box-shadow:0 0 25px #d9ad5233;
+.container{
+  max-width:1250px;
+  margin:auto;
+  padding:20px;
 }
-
-.brand-name{
- font-size:18px;
- font-weight:900;
- letter-spacing:2px;
-}
-
-.brand-name span{color:var(--gold)}
-
-.header-right{
- display:flex;
- align-items:center;
- gap:12px;
-}
-
-.status{
- color:var(--green);
- font-size:11px;
-}
-
-.logout{
- border:1px solid var(--border);
- color:var(--gold2);
- background:#171d26;
- padding:10px 15px;
- border-radius:9px;
-}
-
-main{
- max-width:1250px;
- margin:auto;
- padding:28px 20px;
-}
-
-.hero{
- display:flex;
- justify-content:space-between;
- align-items:center;
- padding:30px;
- border:1px solid var(--border);
- border-radius:20px;
- background:
- linear-gradient(110deg,#1b1a16,#12151c 65%);
- overflow:hidden;
- position:relative;
- margin-bottom:25px;
-}
-
-.hero:after{
- content:"";
- position:absolute;
- width:280px;
- height:280px;
- right:5%;
- top:-130px;
- border-radius:50%;
- background:#d9ad5215;
- filter:blur(35px);
-}
-
-.hero h1{
- font-size:clamp(25px,5vw,42px);
- margin:0 0 10px;
-}
-
-.hero h1 span{color:var(--gold)}
-
-.hero p{
- color:var(--muted);
- line-height:1.6;
- font-size:13px;
-}
-
-.coin{
- width:130px;
- height:130px;
- border-radius:50%;
- display:grid;
- place-items:center;
- flex-shrink:0;
- margin:0 35px;
- background:
- radial-gradient(circle at 35% 25%,#fff0b4,#e5b84f 28%,#98691d 65%,#4e3210);
- border:7px double #ffe5a0;
- box-shadow:
- 0 0 0 5px #b98a3540,
- 0 0 45px #e8b84b55,
- inset 0 0 20px #57380d;
- transform:rotate(-12deg);
-}
-
-.coin span{
- font-size:75px;
- font-weight:900;
- color:#6c4710;
- text-shadow:2px 3px 1px #ffe6a0;
-}
-
-.section-title{
- font-size:17px;
- margin:28px 0 15px;
-}
-
-.section-title span{color:var(--gold)}
-
-.stats{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:15px;
-}
-
-.stat{
- background:linear-gradient(145deg,#171d26,#10141b);
- border:1px solid var(--border);
- border-radius:15px;
- padding:20px;
- position:relative;
- overflow:hidden;
-}
-
-.stat:after{
- content:"";
- position:absolute;
- right:-25px;
- bottom:-40px;
- width:100px;
- height:100px;
- border-radius:50%;
- background:#d9ad5210;
-}
-
-.stat-icon{
- font-size:22px;
- margin-bottom:15px;
-}
-
-.stat small{
- color:var(--muted);
- font-size:11px;
- letter-spacing:1px;
-}
-
-.stat h2{
- color:var(--gold2);
- font-size:27px;
- margin:10px 0 0;
- overflow-wrap:anywhere;
-}
-
-.grid{
- display:grid;
- grid-template-columns:1.4fr 1fr;
- gap:18px;
- margin-top:20px;
-}
-
 .card{
- background:var(--panel);
- border:1px solid var(--border);
- border-radius:16px;
- padding:20px;
- min-width:0;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:18px;
 }
-
-.card h3{
- font-size:15px;
- margin:0 0 20px;
-}
-
-.card h3 span{color:var(--gold)}
-
-.chart-box{
- height:250px;
- position:relative;
-}
-
-.table-card{
- margin-top:20px;
-}
-
-.table-wrap{
- overflow-x:auto;
-}
-
-table{
- width:100%;
- border-collapse:collapse;
- min-width:620px;
-}
-
-th,td{
- padding:15px 12px;
- border-bottom:1px solid #ffffff0d;
- text-align:left;
- font-size:12px;
-}
-
-th{
- color:var(--gold);
- font-size:10px;
- letter-spacing:1px;
-}
-
-td{color:#d5d8de}
-
-.badge{
- display:inline-block;
- padding:6px 10px;
- border-radius:20px;
- font-size:10px;
- background:#d9ad5218;
- color:var(--gold2);
-}
-
-.pending{color:#ffc65b}
-.approved{color:var(--green)}
-.rejected{color:var(--red)}
-
-.refresh{
- background:linear-gradient(135deg,#f5d78a,#b98427);
- border:0;
- padding:12px 18px;
- border-radius:9px;
- color:#211809;
- font-weight:800;
- margin-top:15px;
-}
-
-.message{
- color:var(--muted);
- font-size:12px;
- margin-top:12px;
-}
-
-.login-box{
- max-width:420px;
- margin:90px auto;
- padding:30px;
- background:linear-gradient(145deg,#1b1d20,#10141b);
- border:1px solid var(--border);
- border-radius:20px;
- box-shadow:0 15px 60px #0008;
-}
-
-.login-box h2{
- text-align:center;
- color:var(--gold2);
- letter-spacing:2px;
-}
-
-.login-box p{
- text-align:center;
- color:var(--muted);
- font-size:12px;
-}
-
+h2{color:var(--gold);font-size:18px}
+.muted{color:var(--muted)}
 input{
- width:100%;
- padding:14px;
- margin:10px 0;
- background:#090c12;
- border:1px solid #343b47;
- border-radius:9px;
- color:white;
- outline:none;
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:#090d15;
+  color:white;
 }
-
-input:focus{
- border-color:var(--gold);
+button{
+  padding:11px 15px;
+  border:0;
+  border-radius:8px;
+  background:var(--gold);
+  color:#111;
+  font-weight:bold;
+  cursor:pointer;
 }
-
-.login-btn{
- width:100%;
- padding:14px;
- margin-top:12px;
- border:0;
- border-radius:9px;
- background:linear-gradient(135deg,#f5d78a,#b98427);
- color:#211809;
- font-weight:900;
-}
-
+button:disabled{opacity:.5;cursor:not-allowed}
+.red{background:var(--red);color:white}
+.green{background:var(--green);color:#07150f}
+.dark{background:#293142;color:white}
 .hidden{display:none!important}
-
+.login{
+  max-width:430px;
+  margin:60px auto;
+}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.stat{
+  background:#192130;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:17px;
+}
+.stat small{color:var(--muted)}
+.stat strong{
+  display:block;
+  margin-top:12px;
+  color:var(--gold);
+  font-size:25px;
+  overflow-wrap:anywhere;
+}
+.tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.tabs button{background:#293142;color:white}
+.tabs button.active{background:var(--gold);color:#111}
+.section{display:none}
+.section.active{display:block}
+.table-wrap{overflow-x:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+th,td{
+  text-align:left;
+  padding:12px 9px;
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  vertical-align:middle;
+}
+th{color:var(--gold)}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions button{font-size:11px;padding:8px}
+.status-pending{color:#ffc45d}
+.status-approved{color:var(--green)}
+.status-rejected{color:var(--red)}
+#message{
+  padding:12px;
+  color:var(--gold);
+  overflow-wrap:anywhere;
+}
 footer{
- text-align:center;
- color:#606773;
- font-size:11px;
- padding:35px 15px;
- letter-spacing:1px;
+  padding:25px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
 }
-
-@media(max-width:850px){
- .stats{grid-template-columns:repeat(2,1fr)}
- .grid{grid-template-columns:1fr}
-}
-
-@media(max-width:500px){
- header{padding:0 14px}
- main{padding:18px 12px}
- .hero{padding:20px}
- .coin{width:85px;height:85px;margin:0 0 0 8px}
- .coin span{font-size:48px}
- .brand-name{font-size:14px}
- .status{display:none}
- .stat{padding:15px}
- .stat h2{font-size:22px}
+@media(max-width:700px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .container{padding:12px}
 }
 </style>
 </head>
@@ -388,412 +150,540 @@ footer{
 <body>
 
 <header>
- <div class="brand">
-  <div class="brand-logo">S</div>
-  <div class="brand-name">SEVEN<span>RISE</span></div>
- </div>
-
- <div class="header-right">
-  <span class="status">● SYSTEM ONLINE</span>
-  <button id="logoutBtn" class="logout hidden"
-  onclick="logout()">LOGOUT</button>
- </div>
+  <div class="logo">SEVENRISE</div>
+  <button id="logoutBtn" class="red hidden">LOGOUT</button>
 </header>
 
-<main>
+<main class="container">
 
-<section id="loginSection" class="login-box">
- <div class="coin" style="margin:20px auto">
-  <span>S</span>
- </div>
+<!-- LOGIN -->
+<section id="loginSection" class="card login">
+  <h1 style="color:var(--gold)">SUPER ADMIN</h1>
+  <p class="muted">SevenRise Ecosystem Control Center</p>
 
- <h2>SUPER ADMIN</h2>
- <p>SEVENRISE PREMIUM CONTROL PANEL</p>
+  <input id="email" type="email" placeholder="Admin Email">
+  <input id="password" type="password" placeholder="Password">
 
- <input id="email" type="email"
- placeholder="Admin Email">
+  <button id="loginBtn" style="width:100%">
+    ACCESS DASHBOARD
+  </button>
 
- <input id="password" type="password"
- placeholder="Password">
-
- <button class="login-btn" onclick="login()">
- ACCESS DASHBOARD
- </button>
-
- <div id="loginMessage" class="message"></div>
+  <p id="loginMessage"></p>
 </section>
 
-<section id="dashboard" class="hidden">
+<!-- ADMIN -->
+<div id="adminPanel" class="hidden">
 
- <div class="hero">
-  <div>
-   <h1>Welcome to <span>SevenRise</span></h1>
-   <p>
-    Premium Ecosystem Management<br>
-    Rise Together. Build The Future.
-   </p>
-   <span class="badge">SUPER ADMIN CONTROL</span>
-   <p id="adminEmail"></p>
-  </div>
+  <section class="card">
+    <h1 style="color:var(--gold)">Admin Dashboard</h1>
+    <p class="muted">SevenRise Super Admin Management</p>
+    <p id="adminEmail"></p>
+    <button id="refreshBtn" class="dark">REFRESH DATA</button>
+  </section>
 
-  <div class="coin">
-   <span>S</span>
-  </div>
- </div>
+  <!-- STATISTICS -->
+  <section class="stats">
+    <div class="stat">
+      <small>TOTAL MEMBERS</small>
+      <strong id="totalMembers">0</strong>
+    </div>
+    <div class="stat">
+      <small>TOTAL SVR POINTS</small>
+      <strong id="totalPoints">0</strong>
+    </div>
+    <div class="stat">
+      <small>PENDING CLAIMS</small>
+      <strong id="pendingClaims">0</strong>
+    </div>
+    <div class="stat">
+      <small>APPROVED CLAIMS</small>
+      <strong id="approvedClaims">0</strong>
+    </div>
+  </section>
 
- <div class="section-title">
-  OVERVIEW <span>STATISTICS</span>
- </div>
+  <section class="card">
+    <h2>SevenRise Statistics</h2>
+    <canvas id="statsChart"></canvas>
+  </section>
 
- <div class="stats">
+  <!-- NAVIGATION -->
+  <section class="card">
+    <div class="tabs">
+      <button class="active" data-tab="members">MEMBERS</button>
+      <button data-tab="claims">CLAIMS</button>
+      <button data-tab="points">SVR POINTS</button>
+    </div>
+  </section>
 
-  <div class="stat">
-   <div class="stat-icon">👥</div>
-   <small>TOTAL MEMBERS</small>
-   <h2 id="members">0</h2>
-  </div>
+  <!-- MEMBERS -->
+  <section id="members" class="section active">
+    <div class="card">
+      <h2>Member Management</h2>
 
-  <div class="stat">
-   <div class="stat-icon">🪙</div>
-   <small>TOTAL SVR POINTS</small>
-   <h2 id="points">0</h2>
-  </div>
+      <input id="memberSearch"
+        placeholder="Cari nama, email, atau wallet">
 
-  <div class="stat">
-   <div class="stat-icon">⏳</div>
-   <small>PENDING CLAIMS</small>
-   <h2 id="pending">0</h2>
-  </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Points</th>
+              <th>Wallet</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="memberRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-  <div class="stat">
-   <div class="stat-icon">✓</div>
-   <small>APPROVED CLAIMS</small>
-   <h2 id="approved">0</h2>
-  </div>
+  <!-- CLAIMS -->
+  <section id="claims" class="section">
+    <div class="card">
+      <h2>Airdrop Claim History</h2>
 
- </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Wallet</th>
+              <th>Status</th>
+              <th>Tanggal</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="claimRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
- <div class="grid">
+  <!-- POINTS -->
+  <section id="points" class="section">
+    <div class="card">
+      <h2>Manage SVR Points</h2>
 
-  <div class="card">
-   <h3>ECOSYSTEM <span>OVERVIEW</span></h3>
-   <div class="chart-box">
-    <canvas id="overviewChart"></canvas>
-   </div>
-  </div>
+      <label>User ID Member</label>
+      <input id="pointUser" placeholder="UUID member">
 
-  <div class="card">
-   <h3>SVR <span>INFORMATION</span></h3>
+      <label>Jumlah SVR Points</label>
+      <input id="pointAmount" type="number" min="1"
+        placeholder="Masukkan jumlah poin">
 
-   <p style="color:#9299a5;font-size:12px">
-    TOKEN NAME
-   </p>
-   <h2 style="color:#e8c36f">SevenRise</h2>
+      <div class="actions">
+        <button id="addPoints">TAMBAH POIN</button>
+        <button id="subtractPoints" class="red">KURANGI POIN</button>
+      </div>
 
-   <p style="color:#9299a5;font-size:12px">
-    TOKEN SYMBOL
-   </p>
-   <h2 style="color:#e8c36f">SVR</h2>
+      <p class="muted">
+        Gunakan tombol POIN pada daftar member untuk memilih akun.
+      </p>
+    </div>
+  </section>
 
-   <p style="color:#9299a5;font-size:12px">
-    BLOCKCHAIN NETWORK
-   </p>
-   <h2 style="color:#e8c36f">BNB Smart Chain</h2>
+  <div id="message"></div>
 
-   <p style="color:#9299a5;font-size:12px">
-    MAXIMUM SUPPLY
-   </p>
-   <h2 style="color:#e8c36f">100,000,000 SVR</h2>
-  </div>
-
- </div>
-
- <div class="card table-card">
-  <h3>MEMBER <span>MANAGEMENT</span></h3>
-
-  <div class="table-wrap">
-   <table>
-    <thead>
-     <tr>
-      <th>EMAIL</th>
-      <th>USERNAME</th>
-      <th>POINTS</th>
-      <th>WALLET</th>
-     </tr>
-    </thead>
-    <tbody id="memberRows"></tbody>
-   </table>
-  </div>
- </div>
-
- <div class="card table-card">
-  <h3>AIRDROP <span>CLAIM HISTORY</span></h3>
-
-  <div class="table-wrap">
-   <table>
-    <thead>
-     <tr>
-      <th>EMAIL</th>
-      <th>WALLET</th>
-      <th>STATUS</th>
-      <th>DATE</th>
-     </tr>
-    </thead>
-    <tbody id="claimRows"></tbody>
-   </table>
-  </div>
- </div>
-
- <button class="refresh" onclick="refreshDashboard()">
- ↻ REFRESH DATA
- </button>
-
- <div id="dashboardMessage" class="message"></div>
-
-</section>
-
+</div>
 </main>
 
 <footer>
- SEVENRISE © 2026<br>
- PREMIUM ECOSYSTEM ADMINISTRATION
+  SEVENRISE © 2026 | SUPER ADMIN
 </footer>
 
 <script>
 const $ = id => document.getElementById(id);
 
-let chart = null;
+let currentUser = null;
+let members = [];
+let claims = [];
+let statsChart = null;
+
+function message(text){
+  $("message").textContent = text;
+}
+
+function formatNumber(value){
+  return Number(value || 0).toLocaleString("id-ID");
+}
 
 async function login(){
+  $("loginBtn").disabled = true;
+  $("loginMessage").textContent = "Memeriksa akun...";
 
- const email=$("email").value.trim();
- const password=$("password").value;
+  try{
+    const {data,error} = await db.auth.signInWithPassword({
+      email:$("email").value.trim(),
+      password:$("password").value
+    });
 
- $("loginMessage").textContent="Verifying access...";
+    if(error) throw error;
 
- try{
+    currentUser = data.user;
+    await verifyAdmin();
 
-  const {data,error}=await db.auth.signInWithPassword({
-   email,password
-  });
+  }catch(error){
+    $("loginMessage").textContent = error.message;
+  }finally{
+    $("loginBtn").disabled = false;
+  }
+}
 
-  if(error) throw error;
+async function verifyAdmin(){
+  const {data,error} = await db.rpc("is_super_admin");
 
-  const {data:isAdmin,error:roleError}=await db.rpc(
-   "is_super_admin"
-  );
-
-  if(roleError) throw roleError;
-
-  if(isAdmin!==true){
-   await db.auth.signOut();
-   throw new Error("Access denied. Super Admin only.");
+  if(error || data !== true){
+    await db.auth.signOut();
+    currentUser = null;
+    $("loginMessage").textContent =
+      error ? error.message : "Akun ini bukan Super Admin.";
+    return;
   }
 
-  openDashboard(data.user);
+  $("loginSection").classList.add("hidden");
+  $("adminPanel").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");
+  $("adminEmail").textContent = currentUser.email;
 
- }catch(e){
-  $("loginMessage").textContent=e.message;
- }
-}
-
-async function openDashboard(user){
-
- $("loginSection").classList.add("hidden");
- $("dashboard").classList.remove("hidden");
- $("logoutBtn").classList.remove("hidden");
-
- $("adminEmail").textContent=user.email;
-
- await refreshDashboard();
-}
-
-async function refreshDashboard(){
-
- $("dashboardMessage").textContent="Loading data...";
-
- try{
-
-  const {data:stats,error:e1}=await db.rpc(
-   "admin_dashboard_stats"
-  );
-
-  if(e1) throw e1;
-
-  const s=Array.isArray(stats)?stats[0]:stats;
-
-  if(!s) throw new Error("Statistics unavailable.");
-
-  $("members").textContent=
-   Number(s.total_members).toLocaleString("id-ID");
-
-  $("points").textContent=
-   Number(s.total_points).toLocaleString("id-ID");
-
-  $("pending").textContent=
-   Number(s.pending_claims).toLocaleString("id-ID");
-
-  $("approved").textContent=
-   Number(s.approved_claims).toLocaleString("id-ID");
-
-  const {data:members,error:e2}=await db.rpc(
-   "admin_list_members"
-  );
-
-  if(e2) throw e2;
-
-  $("memberRows").replaceChildren();
-
-  members.forEach(m=>{
-
-   const tr=document.createElement("tr");
-
-   [m.email,m.display_name,m.points,m.wallet_address||"-"]
-   .forEach(value=>{
-    const td=document.createElement("td");
-    td.textContent=value??"-";
-    tr.appendChild(td);
-   });
-
-   $("memberRows").appendChild(tr);
-  });
-
-  const {data:claims,error:e3}=await db.rpc(
-   "admin_list_claims"
-  );
-
-  if(e3) throw e3;
-
-  $("claimRows").replaceChildren();
-
-  claims.forEach(c=>{
-
-   const tr=document.createElement("tr");
-
-   const values=[
-    c.email,
-    c.wallet_address,
-    c.status,
-    new Date(c.created_at).toLocaleDateString("id-ID")
-   ];
-
-   values.forEach((value,index)=>{
-
-    const td=document.createElement("td");
-
-    td.textContent=value??"-";
-
-    if(index===2){
-     td.className=c.status;
-    }
-
-    tr.appendChild(td);
-   });
-
-   $("claimRows").appendChild(tr);
-  });
-
-  createChart(s);
-
-  $("dashboardMessage").textContent=
-   "Dashboard successfully updated.";
-
- }catch(e){
-
-  $("dashboardMessage").textContent=
-   "ERROR: "+e.message;
- }
-}
-
-function createChart(s){
-
- const canvas=$("overviewChart");
-
- if(chart) chart.destroy();
-
- chart=new Chart(canvas,{
-  type:"bar",
-
-  data:{
-   labels:["Members","Pending","Approved"],
-
-   datasets:[{
-    label:"SevenRise Statistics",
-
-    data:[
-     Number(s.total_members),
-     Number(s.pending_claims),
-     Number(s.approved_claims)
-    ],
-
-    backgroundColor:[
-     "#d9ad52",
-     "#e8a83d",
-     "#35d49a"
-    ],
-
-    borderRadius:8
-   }]
-  },
-
-  options:{
-   responsive:true,
-   maintainAspectRatio:false,
-
-   plugins:{
-    legend:{display:false}
-   },
-
-   scales:{
-    y:{
-     beginAtZero:true,
-     ticks:{color:"#9299a5"},
-     grid:{color:"#ffffff12"}
-    },
-
-    x:{
-     ticks:{color:"#d9ad52"},
-     grid:{display:false}
-    }
-   }
-  }
- });
+  await refreshAll();
 }
 
 async function logout(){
- await db.auth.signOut();
- location.reload();
+  await db.auth.signOut();
+  location.reload();
 }
 
-async function checkSession(){
+async function refreshAll(){
+  message("Memuat data...");
 
- try{
+  await Promise.all([
+    loadStats(),
+    loadMembers(),
+    loadClaims()
+  ]);
 
-  const {data,error}=await db.auth.getSession();
+  message("Pembaruan data selesai.");
+}
 
-  if(error) throw error;
+async function loadStats(){
+  const {data,error} =
+    await db.rpc("admin_dashboard_stats");
 
-  if(!data.session) return;
-
-  const {data:isAdmin,error:roleError}=await db.rpc(
-   "is_super_admin"
-  );
-
-  if(roleError || isAdmin!==true){
-   await db.auth.signOut();
-   return;
+  if(error){
+    message("Statistik: " + error.message);
+    return;
   }
 
-  openDashboard(data.session.user);
+  const s = data?.[0];
+  if(!s) return;
 
- }catch(e){
+  $("totalMembers").textContent =
+    formatNumber(s.total_members);
 
-  $("loginMessage").textContent=e.message;
- }
+  $("totalPoints").textContent =
+    formatNumber(s.total_points);
+
+  $("pendingClaims").textContent =
+    formatNumber(s.pending_claims);
+
+  $("approvedClaims").textContent =
+    formatNumber(s.approved_claims);
+
+  if(statsChart) statsChart.destroy();
+
+  statsChart = new Chart($("statsChart"),{
+    type:"bar",
+    data:{
+      labels:["Members","Pending Claims","Approved Claims"],
+      datasets:[{
+        label:"SevenRise Statistics",
+        data:[
+          Number(s.total_members || 0),
+          Number(s.pending_claims || 0),
+          Number(s.approved_claims || 0)
+        ],
+        backgroundColor:["#d8ad50","#ffc45d","#28c58b"]
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{labels:{color:"#fff"}}
+      },
+      scales:{
+        x:{ticks:{color:"#fff"}},
+        y:{ticks:{color:"#fff"},beginAtZero:true}
+      }
+    }
+  });
 }
 
-checkSession();
+async function loadMembers(){
+  const {data,error} =
+    await db.rpc("admin_list_members");
+
+  if(error){
+    message("Member: " + error.message);
+    return;
+  }
+
+  members = data || [];
+  renderMembers();
+}
+
+function renderMembers(){
+  const query = $("memberSearch").value.toLowerCase();
+  const tbody = $("memberRows");
+
+  tbody.replaceChildren();
+
+  const filtered = members.filter(m =>
+    String(m.display_name || "").toLowerCase().includes(query) ||
+    String(m.email || "").toLowerCase().includes(query) ||
+    String(m.wallet_address || "").toLowerCase().includes(query)
+  );
+
+  filtered.forEach(m=>{
+    const tr = document.createElement("tr");
+
+    function cell(value){
+      const td = document.createElement("td");
+      td.textContent = value ?? "-";
+      return td;
+    }
+
+    const name = cell(m.display_name);
+    const email = cell(m.email);
+    const points = cell(formatNumber(m.points));
+    const wallet = cell(m.wallet_address);
+
+    const action = document.createElement("td");
+    const box = document.createElement("div");
+    box.className = "actions";
+
+    const edit = document.createElement("button");
+    edit.textContent = "EDIT NAMA";
+    edit.onclick = ()=>editMember(m);
+
+    const point = document.createElement("button");
+    point.textContent = "POIN";
+    point.className = "dark";
+    point.onclick = ()=>{
+      $("pointUser").value = m.user_id;
+      document.querySelector('[data-tab="points"]').click();
+    };
+
+    box.append(edit,point);
+    action.append(box);
+
+    tr.append(name,email,points,wallet,action);
+    tbody.append(tr);
+  });
+}
+
+async function editMember(member){
+  const newName = prompt(
+    "Masukkan nama member baru:",
+    member.display_name || ""
+  );
+
+  if(newName === null) return;
+
+  const {data,error} = await db.rpc(
+    "admin_update_member",
+    {
+      p_user_id:member.user_id,
+      p_display_name:newName
+    }
+  );
+
+  if(error){
+    message(error.message);
+    return;
+  }
+
+  message(data);
+  await loadMembers();
+}
+
+async function loadClaims(){
+  const {data,error} =
+    await db.rpc("admin_list_claims");
+
+  if(error){
+    message("Claims: " + error.message);
+    return;
+  }
+
+  claims = data || [];
+  renderClaims();
+}
+
+function renderClaims(){
+  const tbody = $("claimRows");
+  tbody.replaceChildren();
+
+  claims.forEach(c=>{
+    const tr = document.createElement("tr");
+
+    function cell(value){
+      const td = document.createElement("td");
+      td.textContent = value ?? "-";
+      return td;
+    }
+
+    const email = cell(c.email);
+    const wallet = cell(c.wallet_address);
+    const status = cell(c.status);
+
+    status.className = "status-" + c.status;
+
+    const date = cell(
+      c.created_at
+        ? new Date(c.created_at).toLocaleString("id-ID")
+        : "-"
+    );
+
+    const action = document.createElement("td");
+    const box = document.createElement("div");
+    box.className = "actions";
+
+    if(c.status === "pending"){
+      const approve = document.createElement("button");
+      approve.textContent = "APPROVE";
+      approve.className = "green";
+      approve.onclick = ()=>processClaim(c,"approved");
+
+      const reject = document.createElement("button");
+      reject.textContent = "REJECT";
+      reject.className = "red";
+      reject.onclick = ()=>processClaim(c,"rejected");
+
+      box.append(approve,reject);
+    }else{
+      box.textContent = "Sudah diproses";
+    }
+
+    action.append(box);
+    tr.append(email,wallet,status,date,action);
+    tbody.append(tr);
+  });
+}
+
+async function processClaim(claim,decision){
+  const action = decision === "approved"
+    ? "menyetujui" : "menolak";
+
+  if(!confirm("Yakin ingin " + action + " klaim ini?")){
+    return;
+  }
+
+  const {data,error} = await db.rpc(
+    "admin_process_claim",
+    {
+      p_claim_id:claim.claim_id,
+      p_decision:decision
+    }
+  );
+
+  if(error){
+    message(error.message);
+    return;
+  }
+
+  message(data);
+  await refreshAll();
+}
+
+async function adjustPoints(action){
+  const userId = $("pointUser").value.trim();
+  const amount = Number($("pointAmount").value);
+
+  if(!userId){
+    message("Pilih member terlebih dahulu.");
+    return;
+  }
+
+  if(!Number.isSafeInteger(amount) || amount <= 0){
+    message("Jumlah poin tidak valid.");
+    return;
+  }
+
+  const word = action === "add" ? "menambah" : "mengurangi";
+
+  if(!confirm("Yakin " + word + " " + amount + " poin?")){
+    return;
+  }
+
+  const {data,error} = await db.rpc(
+    "admin_adjust_points",
+    {
+      p_user_id:userId,
+      p_amount:amount,
+      p_action:action
+    }
+  );
+
+  if(error){
+    message(error.message);
+    return;
+  }
+
+  message("Berhasil. Saldo poin terbaru: " + formatNumber(data));
+
+  $("pointAmount").value = "";
+
+  await loadMembers();
+  await loadStats();
+}
+
+document.querySelectorAll("[data-tab]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    document.querySelectorAll("[data-tab]").forEach(b=>
+      b.classList.remove("active")
+    );
+
+    document.querySelectorAll(".section").forEach(s=>
+      s.classList.remove("active")
+    );
+
+    button.classList.add("active");
+    $(button.dataset.tab).classList.add("active");
+  });
+});
+
+$("loginBtn").addEventListener("click",login);
+$("logoutBtn").addEventListener("click",logout);
+$("refreshBtn").addEventListener("click",refreshAll);
+$("memberSearch").addEventListener("input",renderMembers);
+
+$("addPoints").addEventListener("click",()=>{
+  adjustPoints("add");
+});
+
+$("subtractPoints").addEventListener("click",()=>{
+  adjustPoints("subtract");
+});
+
+async function init(){
+  const {data,error} = await db.auth.getSession();
+
+  if(error){
+    $("loginMessage").textContent = error.message;
+    return;
+  }
+
+  if(data.session){
+    currentUser = data.session.user;
+    await verifyAdmin();
+  }
+}
+
+init();
 </script>
 
 </body>
- </html>
+   </html>
